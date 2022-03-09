@@ -4,6 +4,8 @@ import SearchBar from '../components/SearchBar';
 import styles from '../styles/Home.module.css';
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import txt from './test.txt';
+
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -113,6 +115,18 @@ export default function Home() {
     setFilteredList(results);
   }, [name]);
 
+  // read from file
+  const file = require("./test.txt");
+
+  fetch(file)
+    .then(response => response.text())
+    .then(text => this.setState({ text }))
+
+  console.log(data);
+  console.log("printing");
+
+
+
   return (
     <Layout>
       <Head>
@@ -151,6 +165,11 @@ export default function Home() {
           ))}
         </tbody>
       </table>
+
+      <br></br>
+      <textarea style={{ width: "500px", height: "400px", id:"data"}}/>
+
+      
 
       {/* <footer className={styles.footer}>
         <a
