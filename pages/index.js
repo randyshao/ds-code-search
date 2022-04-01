@@ -2,12 +2,18 @@ import Head from 'next/head';
 import Image from 'next/image';
 import SearchBar from '../components/SearchBar';
 import styles from '../styles/Home.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import Layout from '../components/Layout';
 
 export default function Home() {
   const [name, setName] = useState('');
   const [filteredList, setFilteredList] = useState([]);
+  const [checked, setChecked] = useState([]);
+
+  const languages = ["Python", "R"];
+  const dataset_size = ["Small", "Medium", "Large"];
+  const date = ["Last 90 days", "Last week", "Today"];
+
 
   let projects = [
     {
@@ -113,6 +119,29 @@ export default function Home() {
     setFilteredList(results);
   }, [name]);
 
+  // Add/Remove checked item from list
+  const handleCheck = (event) => {
+    var updatedList = [...checked];
+    if (event.target.checked) {
+      updatedList = [...checked, event.target.value];
+    } else {
+      updatedList.splice(checked.indexOf(event.target.value), 1);
+    }
+    setChecked(updatedList);
+  };
+
+  // Generate string of checked items
+  const checkedItems = checked.length
+    ? checked.reduce((total, item) => {
+        return total + ", " + item;
+      })
+    : "";
+
+  // Return classes based on whether item is checked
+  var isChecked = (item) =>
+    checked.includes(item) ? "checked-item" : "not-checked-item";
+
+
   return (
     <Layout>
       <Head>
@@ -130,27 +159,62 @@ export default function Home() {
         placeholder='Search projects...'
         getQuery={(q) => setName(q)}
       />
-
-      <table className={styles.DailyEvents}>
-        <thead>
-          <tr>
-            <th>Project Name</th>
-            <th>Language</th>
-            <th>Libraries</th>
-            <th>Tags</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredList.map((project, index) => (
-            <tr className={styles.row} key={index}>
-              <td>{project.project_name}</td>
-              <td>{project.language}</td>
-              <td>{project.library}</td>
-              <td>{project.tags}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={styles.content}>
+        <div className={styles.filterBox}>
+          <h3 style={{color: 'black'}}>Filters</h3>
+          <div style={{color:'black', fontSize: '12px'}}>
+            {`Showing results for: ${checkedItems}`}
+          </div>
+          <br></br>
+          <div className="filters">
+            <h5>Date:</h5>
+              {date.map((item, index) => (
+                <div key={index}>
+                  <input value={item} type="checkbox" onChange={handleCheck} />
+                  <span className={ (item)}>{item}</span>
+                </div>
+              ))}
+            <h5>Language:</h5>
+              {languages.map((item, index) => (
+                <div key={index}>
+                  <input value={item} type="checkbox" onChange={handleCheck} />
+                  <span className={isChecked(item)}>{item}</span>
+                </div>
+              ))}
+              <h5>Dataset Size:</h5>
+              {dataset_size.map((item, index) => (
+                <div key={index}>
+                  <input value={item} type="checkbox" onChange={handleCheck} />
+                  <span className={isChecked(item)}>{item}</span>
+                </div>
+              ))}
+          </div>
+          
+         
+        </div>
+        <div className={styles.resultsBox}>
+          <table className={styles.DailyEvents}>
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Language</th>
+                <th>Libraries</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredList.map((project, index) => (
+                <tr className={styles.row} key={index}>
+                  <td>{project.project_name}</td>
+                  <td>{project.language}</td>
+                  <td>{project.library}</td>
+                  <td>{project.tags}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* <footer className={styles.footer}>
         <a
