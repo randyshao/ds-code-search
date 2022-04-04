@@ -142,36 +142,23 @@ export default function Home() {
             </tbody>
           </table>
         </div> */}
-        <div>
-          <div className={styles.resultsBox}>
-            <table className={styles.DailyEvents}>
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Language</th>
-                  <th>Date</th>
-                  <th>Content</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project) => {
-                  return (
-                    <tr className={styles.row}>
-                      <td>{project.name}</td>
-                      <td>{project.language}</td>
-                      {/* <td>{project.url}</td> */}
-                      <td>{project.date}</td>
-                      <td>{project.content}</td>
-                    </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
+        <div className={styles.resultsBox}>
+          {projects.map((project) => {
+              return (
+                <div className ={styles.result}>
+                  <p style={{fontWeight: "bold"}}> <img width='20' src='kaggle.png' /> <a className={styles.link} href={project.url}> {project.name}</a></p>
+                  <p>{project.language} | {project.date} | {project.views} views</p>
+                  <p>{project.tags}</p>
+                  <p> CODE SNIPPET HERE
+                        --
+                        --
+                        --
+                  </p>                 
+                </div>
+              );
+          })}
         </div>
       </div>
-    
-
       {/* <footer className={styles.footer}>
         <a
           href='https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app'
