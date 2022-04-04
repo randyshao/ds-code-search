@@ -9,6 +9,13 @@ import { getDatabase, ref, query, orderByChild} from "firebase/database";
 
 export default function Home() {
 
+  /** TO DO:
+   * search box filtering 
+   * check box filtering 
+   * display content in chunk instead of entire body content - access using project.content
+   * deploy using Vercel at the end
+   */
+
   const [name, setName] = useState('');
   const [filteredList, setFilteredList] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -26,13 +33,13 @@ export default function Home() {
 
   // get projects from database
   // to view all projects: replace q with projectsCollectionRef
-  onSnapshot(q, (snapshot) => {
-    const getProjects = async () => {
-          const data = await getDocs(q);
-          setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
-        }
-    getProjects()
-  })
+  // onSnapshot(q, (snapshot) => {
+  //   const getProjects = async () => {
+  //         const data = await getDocs(q);
+  //         setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
+  //       }
+  //   getProjects()
+  // })
   
   function applyFilters(e) {
     // handle filter changes here????????????????????
@@ -48,7 +55,7 @@ export default function Home() {
       }
       
     });
-  }
+    }
   
 
   // // get projects from database --- alternative version, no query
