@@ -4,8 +4,8 @@ import styles from '../styles/Home.module.css';
 import React, { useState, useEffect} from 'react';
 import Layout from '../components/Layout';
 import { db } from './firebase';
-import {collection, getDocs, } from 'firebase/firestore';
-import { getDatabase, ref, query, limitToLast } from "firebase/database";
+import {collection, getDocs, onSnapshot, where, } from 'firebase/firestore';
+import { getDatabase, ref, query, orderByChild} from "firebase/database";
 
 export default function Home() {
 
@@ -15,23 +15,50 @@ export default function Home() {
 
   // arrays for filters
   const languages = ["Python", "R"];
-  const date = ["Over 1 year", "Last 90 days", "Last week", "Today"];
+  const date = ["Over 1 year", "Last year", "Last week", "Today"];
   const views = ["Under 100","100 - 9999", "More than 10,000"];
 
   const [projects, setProjects] = useState([]);
   const projectsCollectionRef = collection(db, "projects");
 
-  // const database = getDatabase();
-  // const recentPostsRef = query(ref(database, 'projects'), limitToLast(3));
+  // example query to only show all Python projects
+  const q = query(projectsCollectionRef, where("language","==","Python"));
 
   // get projects from database
-  useEffect(() => {
+  // to view all projects: replace q with projectsCollectionRef
+  onSnapshot(q, (snapshot) => {
     const getProjects = async () => {
-      const data = await getDocs(projectsCollectionRef);
-      setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
-    }
+          const data = await getDocs(q);
+          setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
+        }
     getProjects()
-  }, []);
+  })
+  
+  function applyFilters(e) {
+    // handle filter changes here????????????????????
+    // maybe useEffect
+    // idk how to reactjs
+    // i want to set the query based on the filters and update the search results
+    checked.forEach(item => {
+      if (item == "Python") {
+    
+      }
+      if (item == "R") {
+
+      }
+      
+    });
+  }
+  
+
+  // // get projects from database --- alternative version, no query
+  // useEffect(() => {
+  //   const getProjects = async () => {
+  //     const data = await getDocs(projectsCollectionRef);
+  //     setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
+  //   }
+  //   getProjects()
+  // }, []);
 
 
   // // searchbox filtering
@@ -118,6 +145,10 @@ export default function Home() {
                   <span className={isChecked(item)}>{item}</span>
                 </div>
               ))}
+              <br></br>
+              <button onClick={applyFilters}>
+              Apply Filters
+            </button>
           </div>
         </div>
         {/* <div className={styles.resultsBox}>
@@ -142,36 +173,23 @@ export default function Home() {
             </tbody>
           </table>
         </div> */}
-        <div>
-          <div className={styles.resultsBox}>
-            <table className={styles.DailyEvents}>
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Language</th>
-                  <th>Date</th>
-                  <th>Content</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project) => {
-                  return (
-                    <tr className={styles.row}>
-                      <td>{project.name}</td>
-                      <td>{project.language}</td>
-                      {/* <td>{project.url}</td> */}
-                      <td>{project.date}</td>
-                      <td>{project.content}</td>
-                    </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
+        <div className={styles.resultsBox}>
+          {projects.map((project) => {
+              return (
+                <div className ={styles.result}>
+                  <p style={{fontWeight: "bold"}}> <img width='20' src='kaggle.png' /> <a className={styles.link} href={project.url}> {project.name}</a></p>
+                  <p>{project.language} | {project.date} | {project.views} views</p>
+                  <p>{project.tags}</p>
+                  <p> CODE SNIPPET HERE
+                        --
+                        --
+                        --
+                  </p>                 
+                </div>
+              );
+          })}
         </div>
       </div>
-    
-
       {/* <footer className={styles.footer}>
         <a
           href='https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app'
