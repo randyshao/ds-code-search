@@ -1,11 +1,15 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import SearchBar from '../components/SearchBar';
 import styles from '../styles/Home.module.css';
-import { useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import Layout from '../components/Layout';
+// import { getProjects } from './projects';
+import { db } from './firebase';
+import {collection, getDocs} from 'firebase/firestore';
 
 export default function Home() {
+
+  // firebase.database.enableLogging(true);
   const [name, setName] = useState('');
   const [filteredList, setFilteredList] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -14,110 +18,31 @@ export default function Home() {
   const dataset_size = ["Small", "Medium", "Large"];
   const date = ["Last 90 days", "Last week", "Today"];
 
+  const [projects, setProjects] = useState([]);
+  const projectsCollectionRef = collection(db, "projects");
 
-  let projects = [
-    {
-      project_name: 'WiDS 2022 - create folds',
-      url: 'https://www.kaggle.com/isha20/wids-2022-create-folds',
-      library: ['pandas', 'numpy'],
-      language: 'Python',
-      tags: null,
-    },
-    {
-      project_name: 'Breast Cancer | EDA + Prediction | 99% acc',
-      url: 'https://www.kaggle.com/asatbek/breast-cancer-eda-prediction-99-acc',
-      library: [
-        'pandas',
-        'numpy',
-        'scipy.stats',
-        'matplotlib.pyplot',
-        'seaborn',
-      ],
-      language: 'Python',
-      tags: null,
-    },
-    {
-      project_name: 'fraud_detection',
-      url: 'https://www.kaggle.com/akouaorsot/fraud-detection',
-      library: ['dplyr', 'tidyverse', 'ggplot2'],
-      language: 'R',
-      tags: null,
-    },
-    {
-      project_name: 'Predicting Disaster Tweets NLP in R Programming',
-      url: 'https://www.kaggle.com/sachinudgam/predicting-disaster-tweets-nlp-in-r-programming',
-      library: ['quanteda', 'ggplot2', 'caret'],
-      language: 'R',
-      tags: null,
-    },
-    {
-      project_name: 'Whales&Dolphins: EffNet Embedding cos Distance',
-      url: 'https://www.kaggle.com/andradaolteanu/whales-dolphins-effnet-embedding-cos-distance',
-      library: ['torch', 'pandas', 'seaborn', 'numpy'],
-      language: 'Python',
-      tags: null,
-    },
-    {
-      project_name: 'Austism Prediction with Random Forest',
-      url: 'https://www.kaggle.com/sidharkal/autism-prediction-with-random-forest',
-      library: ['numpy', 'pandas'],
-      language: 'PYthon',
-      tags: null,
-    },
-    {
-      project_name: 'California Birth Rates (Exploratory Analysis)',
-      url: 'https://www.kaggle.com/yonkotoshiro/california-birth-rates-exploratory-analysis',
-      library: ['pandas', 'plotly'],
-      language: 'Python',
-      tags: null,
-    },
-    {
-      project_name: 'Credit Card Fraud Analysis',
-      url: 'https://www.kaggle.com/heyrobin/credit-card-fraud-analysis-eda',
-      library: ['numpy', 'pandas'],
-      language: 'Python',
-      tags: [
-        'Data Visualization',
-        'Exploratory Data Analysis',
-        'Data Analytics',
-        'Banking',
-        'Insurance',
-      ],
-    },
-    {
-      project_name: 'Wine Quality',
-      url: 'https://www.kaggle.com/qusaybtoush/wine-quality',
-      library: ['pandas', 'numpy', 'seaborn', 'matplotlib.pyplot'],
-      language: 'Python',
-      tags: [
-        'Data Visualization',
-        'Classification',
-        'Data Analytics',
-        'Linear Regression',
-      ],
-    },
-    {
-      project_name: 'Titanic',
-      url: 'https://www.kaggle.com/foocheechuan/titanic',
-      library: ['pandas', 'numpy'],
-      language: 'Python',
-      tags: ['Beginner', 'Classification', 'Categorical Data'],
-    },
-  ];
-
-  // searchbox filtering
   useEffect(() => {
-    const results = projects.filter(
-      (project) =>
-        project.project_name.toLowerCase().includes(name) +
-        project.project_name.toUpperCase().includes(name) +
-        project.language.toLowerCase().includes(name) +
-        project.language.toUpperCase().includes(name)
+    const getProjects = async () => {
+      const data = await getDocs(projectsCollectionRef);
+      setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
+    }
 
-      // project.library.includes(name)
-    );
-    setFilteredList(results);
-  }, [name]);
+    getProjects()
+  }, []);
+  
+  // // searchbox filtering
+  // useEffect(() => {
+  //   const results = projects.filter(
+  //     (project) =>
+  //       project.project_name.toLowerCase().includes(name) +
+  //       project.project_name.toUpperCase().includes(name) +
+  //       project.language.toLowerCase().includes(name) +
+  //       project.language.toUpperCase().includes(name)
+
+  //     // project.library.includes(name)
+  //   );
+  //   setFilteredList(results);
+  // }, [name]);
 
   // Add/Remove checked item from list
   const handleCheck = (event) => {
@@ -144,6 +69,7 @@ export default function Home() {
 
   return (
     <Layout>
+      
       <Head>
         <title>Create Next App</title>
         <meta name='description' content='Generated by create next app' />
@@ -189,10 +115,8 @@ export default function Home() {
                 </div>
               ))}
           </div>
-          
-         
         </div>
-        <div className={styles.resultsBox}>
+        {/* <div className={styles.resultsBox}>
           <table className={styles.DailyEvents}>
             <thead>
               <tr>
@@ -213,8 +137,35 @@ export default function Home() {
               ))}
             </tbody>
           </table>
-        </div>
+        </div> */}
       </div>
+     <div>
+       {projects.map((project) => {
+         return (
+          <div className={styles.resultsBox}>
+          <table className={styles.DailyEvents}>
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Language</th>
+                <th>Date</th>
+                <th>Content</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr className={styles.row}>
+                  <td>{project.name}</td>
+                  <td>{project.language}</td>
+                  {/* <td>{project.url}</td> */}
+                  <td>{project.date}</td>
+                  <td>{project.content}</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+         );
+       })}
+     </div>
 
       {/* <footer className={styles.footer}>
         <a
