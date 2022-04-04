@@ -3,13 +3,11 @@ import SearchBar from '../components/SearchBar';
 import styles from '../styles/Home.module.css';
 import React, { useState, useEffect} from 'react';
 import Layout from '../components/Layout';
-// import { getProjects } from './projects';
 import { db } from './firebase';
 import {collection, getDocs} from 'firebase/firestore';
 
 export default function Home() {
 
-  // firebase.database.enableLogging(true);
   const [name, setName] = useState('');
   const [filteredList, setFilteredList] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -21,12 +19,12 @@ export default function Home() {
   const [projects, setProjects] = useState([]);
   const projectsCollectionRef = collection(db, "projects");
 
+  // get projects from database
   useEffect(() => {
     const getProjects = async () => {
       const data = await getDocs(projectsCollectionRef);
       setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
     }
-
     getProjects()
   }, []);
   
