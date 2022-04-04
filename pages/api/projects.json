@@ -4,7 +4,8 @@
     "url": "https://www.kaggle.com/isha20/wids-2022-create-folds",
     "library": ["pandas", "numpy"],
     "language": "Python",
-    "tags": null
+    "tags": null,
+    "content": "import pandas as pd from sklearn import model_selection import numpy as np\n# %% [markdown]\n# ## 5-folds\ntrain = pd.read_csv('../input/widsdatathon2022/train.csv')"
   },
   {
     "project_name": "Breast Cancer | EDA + Prediction | 99% acc",
