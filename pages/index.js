@@ -25,19 +25,20 @@ export default function Home() {
 
   const [projects, setProjects] = useState([]);
   const projectsCollectionRef = collection(db, 'projects');
+  var tags = [];
 
   // example query to only show all Python projects
   const q = query(projectsCollectionRef, where('language', '==', 'Python'));
 
-  // get projects from database
+  // get projects from database - query version
   // to view all projects: replace q with projectsCollectionRef
-  onSnapshot(q, (snapshot) => {
-    const getProjects = async () => {
-      const data = await getDocs(q);
-      setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getProjects();
-  });
+  // onSnapshot(q, (snapshot) => {
+  //   const getProjects = async () => {
+  //     const data = await getDocs(projectsCollectionRef);
+  //     setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  //   };
+  //   getProjects();
+  // });
 
   function applyFilters(e) {
     // handle filter changes here????????????????????
@@ -53,13 +54,13 @@ export default function Home() {
   }
 
   // // get projects from database --- alternative version, no query
-  // useEffect(() => {
-  //   const getProjects = async () => {
-  //     const data = await getDocs(projectsCollectionRef);
-  //     setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
-  //   }
-  //   getProjects()
-  // }, []);
+  useEffect(() => {
+    const getProjects = async () => {
+      const data = await getDocs(projectsCollectionRef);
+      setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
+    }
+    getProjects()
+  }, []);
 
   const [search, setSearch] = useState('');
 
@@ -149,30 +150,14 @@ export default function Home() {
             <button onClick={applyFilters}>Apply Filters</button>
           </div>
         </div>
-        {/* <div className={styles.resultsBox}>
-          <table className={styles.DailyEvents}>
-            <thead>
-              <tr>
-                <th>Project Name</th>
-                <th>Language</th>
-                <th>Libraries</th>
-                <th>Tags</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredList.map((project, index) => (
-                <tr className={styles.row} key={index}>
-                  <td>{project.project_name}</td>
-                  <td>{project.language}</td>
-                  <td>{project.library}</td>
-                  <td>{project.tags}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div> */}
         <div className={styles.resultsBox}>
           {filteredList.map((project) => {
+            tags = [];
+            if (project.tags) {
+              project.tags.forEach(item => {
+                tags.push(item);
+              })
+            }
             return (
               <div className={styles.result}>
                 <p style={{ fontWeight: 'bold' }}>
@@ -186,7 +171,15 @@ export default function Home() {
                 <p>
                   {project.language} | {project.date} | {project.views} views
                 </p>
-                <p>{project.tags}</p>
+                <div className={styles.tagsBox}>
+                  {tags.map((item) => (
+                      <div key={item} style={{ display: "flex" }}>
+                      <div className={styles.tag}>
+                        <p>{item} |</p>
+                      </div>
+                    </div>
+                    ))}
+                </div>
                 {/* <p> CODE SNIPPET HERE -- -- --</p> */}
               </div>
             );
