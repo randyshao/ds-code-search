@@ -123,25 +123,24 @@ export default function Home() {
           <div style={{ color: 'black', fontSize: '12px' }}>
             {`Showing results for: ${checkedItems}`}
           </div>
-          <br></br>
           <div className='filters'>
             <h5>Date:</h5>
             {date.map((item, index) => (
-              <div key={index}>
+              <div key={index}  style={{fontSize : '0.83em'}}>
                 <input value={item} type='checkbox' onChange={handleCheck} />
                 <span className={item}>{item}</span>
               </div>
             ))}
             <h5>Language:</h5>
             {languages.map((item, index) => (
-              <div key={index}>
+              <div key={index}  style={{fontSize : '0.83em'}}>
                 <input value={item} type='checkbox' onChange={handleCheck} />
                 <span className={isChecked(item)}>{item}</span>
               </div>
             ))}
             <h5>Number of Views:</h5>
             {views.map((item, index) => (
-              <div key={index}>
+              <div key={index} style={{fontSize : '0.83em'}}>
                 <input value={item} type='checkbox' onChange={handleCheck} />
                 <span className={isChecked(item)}>{item}</span>
               </div>
@@ -168,7 +167,7 @@ export default function Home() {
                     {project.name}
                   </a>
                 </p>
-                <p>
+                <p style={{marginBottom: 0, fontSize: '0.83em'}}>
                   {project.language} | {project.date} | {project.views} views
                 </p>
                 <div className={styles.tagsBox}>
@@ -180,6 +179,9 @@ export default function Home() {
                     </div>
                     ))}
                 </div>
+                <br></br>
+                {/* temporary snippet */}
+                <img width='100%' src='coronavirus.png' />
                 {/* <p> CODE SNIPPET HERE -- -- --</p> */}
               </div>
             );
