@@ -153,3 +153,15 @@
   text-decoration: underline;
   color: blue;
 }
+
+.tagsBox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  color: orange;
+}
