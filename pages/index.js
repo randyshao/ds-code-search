@@ -1,7 +1,9 @@
 import Head from 'next/head';
 import SearchBar from '../components/SearchBar';
+import Filters from '../components/Filters';
+import Results from '../components/Results';
 import styles from '../styles/Home.module.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import { db } from '../firebase/clientApp';
 import { collection, getDocs, onSnapshot, where } from 'firebase/firestore';
@@ -16,7 +18,6 @@ export default function Home() {
    */
 
   const [filteredList, setFilteredList] = useState([]);
-  const [checked, setChecked] = useState([]);
 
   // arrays for filters
   const languages = ['Python', 'R'];
@@ -25,7 +26,7 @@ export default function Home() {
 
   const [projects, setProjects] = useState([]);
   const projectsCollectionRef = collection(db, 'projects');
-  var tags = [];
+  let tags = [];
 
   // example query to only show all Python projects
   const q = query(projectsCollectionRef, where('language', '==', 'Python'));
@@ -40,27 +41,55 @@ export default function Home() {
   //   getProjects();
   // });
 
-  function applyFilters(e) {
-    // handle filter changes here????????????????????
-    // maybe useEffect
-    // idk how to reactjs
-    // i want to set the query based on the filters and update the search results
-    checked.forEach((item) => {
-      if (item == 'Python') {
-      }
-      if (item == 'R') {
-      }
-    });
-  }
-
   // // get projects from database --- alternative version, no query
   useEffect(() => {
     const getProjects = async () => {
       const data = await getDocs(projectsCollectionRef);
-      setProjects(data.docs.map((doc) => ({...doc.data(), id : doc.id})));
-    }
-    getProjects()
+      setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getProjects();
   }, []);
+
+  const [state, setState] = useState({
+    results: projects,
+    languages: new Set(),
+  });
+
+  // useEffect(() => {
+  //   setState({
+  //     languages: new Set(),
+  //     results: projects,
+  //   });
+  // }, [projects]);
+
+  console.log(state);
+
+  const handleCheck = useCallback(
+    (event) => {
+      setState((previousState) => {
+        let languages = new Set(previousState.languages);
+        let results = projects;
+
+        if (event.target.checked) {
+          languages.add(event.target.value);
+        } else {
+          languages.delete(event.target.value);
+        }
+
+        if (languages.size) {
+          results = results.filter((result) => {
+            return languages.has(result.language);
+          });
+        }
+
+        return {
+          languages,
+          results,
+        };
+      });
+    },
+    [setState]
+  );
 
   const [search, setSearch] = useState('');
 
@@ -79,26 +108,16 @@ export default function Home() {
   }, [search]);
 
   // Add/Remove checked item from list
-  const handleCheck = (event) => {
-    var updatedList = [...checked];
-    if (event.target.checked) {
-      updatedList = [...checked, event.target.value];
-    } else {
-      updatedList.splice(checked.indexOf(event.target.value), 1);
-    }
-    setChecked(updatedList);
-  };
-
-  // Generate string of checked items
-  const checkedItems = checked.length
-    ? checked.reduce((total, item) => {
-        return total + ', ' + item;
-      })
-    : '';
-
-  // Return classes based on whether item is checked
-  var isChecked = (item) =>
-    checked.includes(item) ? 'checked-item' : 'not-checked-item';
+  // const handleCheck = (event) => {
+  //   console.log(event.target.value);
+  //   // var updatedList = [...checked];
+  //   // if (event.target.checked) {
+  //   //   updatedList = [...checked, event.target.value];
+  //   // } else {
+  //   //   updatedList.splice(checked.indexOf(event.target.value), 1);
+  //   // }
+  //   // setChecked(updatedList);
+  // };
 
   return (
     <Layout>
@@ -118,75 +137,13 @@ export default function Home() {
         getQuery={(q) => setSearch(q)}
       />
       <div className={styles.content}>
-        <div className={styles.filterBox}>
-          <h3 style={{ color: 'black' }}>Filters</h3>
-          <div style={{ color: 'black', fontSize: '12px' }}>
-            {`Showing results for: ${checkedItems}`}
-          </div>
-          <div className='filters'>
-            <h5>Date:</h5>
-            {date.map((item, index) => (
-              <div key={index}  style={{fontSize : '0.83em'}}>
-                <input value={item} type='checkbox' onChange={handleCheck} />
-                <span className={item}>{item}</span>
-              </div>
-            ))}
-            <h5>Language:</h5>
-            {languages.map((item, index) => (
-              <div key={index}  style={{fontSize : '0.83em'}}>
-                <input value={item} type='checkbox' onChange={handleCheck} />
-                <span className={isChecked(item)}>{item}</span>
-              </div>
-            ))}
-            <h5>Number of Views:</h5>
-            {views.map((item, index) => (
-              <div key={index} style={{fontSize : '0.83em'}}>
-                <input value={item} type='checkbox' onChange={handleCheck} />
-                <span className={isChecked(item)}>{item}</span>
-              </div>
-            ))}
-            <br></br>
-            <button onClick={applyFilters}>Apply Filters</button>
-          </div>
-        </div>
-        <div className={styles.resultsBox}>
-          {filteredList.map((project) => {
-            tags = [];
-            if (project.tags) {
-              project.tags.forEach(item => {
-                tags.push(item);
-              })
-            }
-            return (
-              <div className={styles.result}>
-                <p style={{ fontWeight: 'bold' }}>
-                  {' '}
-                  <img width='20' src='kaggle.png' />{' '}
-                  <a className={styles.link} href={project.url}>
-                    {' '}
-                    {project.name}
-                  </a>
-                </p>
-                <p style={{marginBottom: 0, fontSize: '0.83em'}}>
-                  {project.language} | {project.date} | {project.views} views
-                </p>
-                <div className={styles.tagsBox}>
-                  {tags.map((item) => (
-                      <div key={item} style={{ display: "flex" }}>
-                      <div className={styles.tag}>
-                        <p>{item} |</p>
-                      </div>
-                    </div>
-                    ))}
-                </div>
-                <br></br>
-                {/* temporary snippet */}
-                <img width='100%' src='coronavirus.png' />
-                {/* <p> CODE SNIPPET HERE -- -- --</p> */}
-              </div>
-            );
-          })}
-        </div>
+        <Filters
+          handleCheck={handleCheck}
+          languages={languages}
+          date={date}
+          views={views}
+        />
+        <Results filteredList={filteredList} tags={tags} />
       </div>
     </Layout>
   );
