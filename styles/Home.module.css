@@ -167,3 +167,17 @@
   color: orange;
   font-size: 0.83em;
 }
+
+.search {
+  text-align: center;
+}
+
+.searchbutton {
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  background-color: white;
+  outline: none;
+  font-size: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+}

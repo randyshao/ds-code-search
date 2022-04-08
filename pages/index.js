@@ -100,7 +100,9 @@ export default function Home() {
         project.name.toLowerCase().includes(search) +
         project.name.toUpperCase().includes(search) +
         project.language.toLowerCase().includes(search) +
-        project.language.toUpperCase().includes(search)
+        project.language.toUpperCase().includes(search) +
+        project.content.toUpperCase().includes(search) +
+        project.content.toLowerCase().includes(search)
 
       // project.library.includes(name)
     );
@@ -143,7 +145,7 @@ export default function Home() {
           date={date}
           views={views}
         />
-        <Results filteredList={filteredList} tags={tags} />
+        <Results filteredList={filteredList} tags={tags} search={search} />
       </div>
     </Layout>
   );

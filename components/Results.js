@@ -1,6 +1,7 @@
 import styles from '../styles/Home.module.css';
+import HighLighter from './highlighter';
 
-const Results = ({ filteredList, tags }) => {
+const Results = ({ filteredList, tags, search }) => {
   return (
     <div className={styles.resultsBox}>
       {filteredList.map((project, index) => {
@@ -34,7 +35,12 @@ const Results = ({ filteredList, tags }) => {
             </div>
             <br></br>
             {/* temporary snippet */}
-            <img width='100%' src='coronavirus.png' />
+            <HighLighter
+              text={project.content}
+              highlight={search}
+              highlightedItemClass='highlight'
+            />
+            {/* <img width='100%' src='coronavirus.png' /> */}
             {/* <p> CODE SNIPPET HERE -- -- --</p> */}
           </div>
         );

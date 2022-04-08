@@ -102,7 +102,7 @@ input[type='text'] {
   border: 0;
   border-radius: 5px;
   width: 60%;
-  margin: 2em auto;
+  margin: 1em auto;
 }
 
 input:focus {
@@ -148,4 +148,9 @@ footer {
 .Close {
   transform: translateX(-150%);
   transition: 0.3s ease-out;
+}
+
+.highlight {
+  font-weight: bold;
+  background-color: yellow;
 }
