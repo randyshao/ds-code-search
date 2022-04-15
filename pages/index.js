@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Axios from 'axios';
 import SearchBar from '../components/SearchBar';
 import Filters from '../components/Filters';
 import Results from '../components/Results';
@@ -18,11 +19,7 @@ export default function Home() {
    */
 
   const [filteredList, setFilteredList] = useState([]);
-
-  // arrays for filters
-  const languages = ['Python', 'R'];
-  const date = ['Over 1 year', 'Last year', 'Last week', 'Today'];
-  const views = ['Under 100', '100 - 9999', 'More than 10,000'];
+  const [skip, setSkip] = useState(0);
 
   const [projects, setProjects] = useState([]);
   const projectsCollectionRef = collection(db, 'projects');
@@ -41,55 +38,38 @@ export default function Home() {
   //   getProjects();
   // });
 
-  // // get projects from database --- alternative version, no query
+  // get projects from database --- alternative version, no query
   useEffect(() => {
-    const getProjects = async () => {
-      const data = await getDocs(projectsCollectionRef);
-      setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
+    // const variables = {
+    //   skip: skip,
+    // };
+
     getProjects();
   }, []);
 
-  const [state, setState] = useState({
-    results: projects,
-    languages: new Set(),
-  });
+  const getProjects = async () => {
+    const data = await getDocs(projectsCollectionRef);
+    setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
 
-  // useEffect(() => {
-  //   setState({
-  //     languages: new Set(),
-  //     results: projects,
-  //   });
-  // }, [projects]);
+    // let skip = 0;
+    // let findArgs = {};
 
-  console.log(state);
+    // for (let key in variables.filters) {
+    //   if (variables.filters[key].length > 0) {
+    //     findArgs[key] = variables.filters[key];
+    //   }
+    // }
+  };
 
-  const handleCheck = useCallback(
-    (event) => {
-      setState((previousState) => {
-        let languages = new Set(previousState.languages);
-        let results = projects;
-
-        if (event.target.checked) {
-          languages.add(event.target.value);
-        } else {
-          languages.delete(event.target.value);
-        }
-
-        if (languages.size) {
-          results = results.filter((result) => {
-            return languages.has(result.language);
-          });
-        }
-
-        return {
-          languages,
-          results,
-        };
-      });
-    },
-    [setState]
-  );
+  // const getProjects = () => {
+  //   Axios.post("/api/projects/getProjects").then(res => {
+  //     if (res.data.success) {
+  //         setProjects(res.data.projects)
+  //     } else {
+  //       alert('Failed to fectch product datas')
+  //     }
+  //   })
+  // }
 
   const [search, setSearch] = useState('');
 
@@ -121,6 +101,55 @@ export default function Home() {
   //   // setChecked(updatedList);
   // };
 
+  // const [filters, setFilters] = useState({
+  //   languages: [],
+  //   date: [],
+  //   views: [],
+  // });
+
+  // const showFilteredResults = () => {
+  //   const variables = {
+  //     skip: 0,
+  //     filters: filters,
+  //   };
+  //   getProjects(variables);
+  //   setSkip(0);
+  // };
+
+  // const handleFilters = (filters, category) => {
+  //   console.log(filters);
+  //   const newFilters = { ...filters };
+  //   newFilters[category] = filters;
+
+  //   showFilteredResults(newFilters);
+  //   setFilters(newFilters);
+  // };
+
+  const [checked, setChecked] = useState([]);
+
+  const handleCheck = (e) => {
+    console.log(e.target.value);
+    const isChecked = e.target.checked;
+    const filter = e.target.value;
+    const newChecked = [...checked];
+
+    if (isChecked) {
+      newChecked.push(filter);
+      setChecked(newChecked);
+      const results = filteredList.filter((project) =>
+        project.language.includes(filter)
+      );
+      setFilteredList(results);
+    } else {
+      for (let i = 0; i < newChecked.length; i++) {
+        if (newChecked[i] === filter) {
+          newChecked.splice(i, 1);
+          setChecked(newChecked);
+        }
+      }
+    }
+  };
+
   return (
     <Layout>
       <Head>
@@ -139,12 +168,7 @@ export default function Home() {
         getQuery={(q) => setSearch(q)}
       />
       <div className={styles.content}>
-        <Filters
-          handleCheck={handleCheck}
-          languages={languages}
-          date={date}
-          views={views}
-        />
+        <Filters handleCheck={handleCheck} />
         <Results filteredList={filteredList} tags={tags} search={search} />
       </div>
     </Layout>

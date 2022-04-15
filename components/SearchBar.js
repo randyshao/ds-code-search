@@ -6,7 +6,6 @@ const Search = ({ placeholder, getQuery }) => {
 
   const inputChange = (q) => {
     setText(q);
-    // getQuery(q);
   };
 
   const submitSearch = (text) => {

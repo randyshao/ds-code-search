@@ -1,5 +1,6 @@
 import styles from '../styles/Home.module.css';
 import HighLighter from './highlighter';
+// import remarkGfm from 'remark-gfm';
 
 const Results = ({ filteredList, tags, search }) => {
   return (
@@ -39,7 +40,7 @@ const Results = ({ filteredList, tags, search }) => {
               text={project.content}
               highlight={search}
               highlightedItemClass='highlight'
-            />
+            ></HighLighter>
             {/* <img width='100%' src='coronavirus.png' /> */}
             {/* <p> CODE SNIPPET HERE -- -- --</p> */}
           </div>
