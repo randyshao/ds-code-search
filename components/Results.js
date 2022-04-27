@@ -1,6 +1,7 @@
 import styles from '../styles/Home.module.css';
-import HighLighter from './highlighter';
+import HighLighter from './Highlighter';
 // import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
 
 let logo;
 
@@ -20,6 +21,8 @@ const Results = ({ filteredList, tags, search }) => {
         else if (project.source == "Towards Data Science") {
           logo = <img width='20' src='tds.png' />;
         }
+        let content = project.content.replaceAll('\\n', '\n');
+        console.log(project);
         return (
           <div key={index} className={styles.result}>
             <p style={{ fontWeight: 'bold' }}>
@@ -43,11 +46,13 @@ const Results = ({ filteredList, tags, search }) => {
               ))}
             </div>
             <br></br>
-            <HighLighter
+            <ReactMarkdown>{content}</ReactMarkdown>
+
+            {/* <HighLighter
               text={project.content}
               highlight={search}
               highlightedItemClass='highlight'
-            ></HighLighter>
+            ></HighLighter> */}
           </div>
         );
       })}

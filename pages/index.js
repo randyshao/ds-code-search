@@ -50,7 +50,6 @@ export default function Home() {
   const getProjects = async () => {
     const data = await getDocs(projectsCollectionRef);
     setProjects(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-
     // let skip = 0;
     // let findArgs = {};
 
