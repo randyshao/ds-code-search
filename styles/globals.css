@@ -8,6 +8,10 @@ body {
   background-color: #001633;
 }
 
+img {
+  max-width: 400px;
+}
+
 h1,
 h2 {
   font-family: 'Montserrat', sans-serif;
