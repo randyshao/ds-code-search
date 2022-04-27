@@ -2,6 +2,8 @@ import styles from '../styles/Home.module.css';
 import HighLighter from './highlighter';
 // import remarkGfm from 'remark-gfm';
 
+let logo;
+
 const Results = ({ filteredList, tags, search }) => {
   return (
     <div className={styles.resultsBox}>
@@ -12,18 +14,24 @@ const Results = ({ filteredList, tags, search }) => {
             tags.push(item);
           });
         }
+        if (project.source == "Kaggle") {
+          logo = <img width='20' src='kaggle.png' />;
+        }
+        else if (project.source == "Towards Data Science") {
+          logo = <img width='20' src='tds.png' />;
+        }
         return (
           <div key={index} className={styles.result}>
             <p style={{ fontWeight: 'bold' }}>
               {' '}
-              <img width='20' src='kaggle.png' />{' '}
+              {logo}{'  '}
               <a className={styles.link} href={project.url}>
                 {' '}
                 {project.name}
               </a>
             </p>
             <p style={{ marginBottom: 0, fontSize: '0.83em' }}>
-              {project.language} | {project.date} | {project.views} views
+              {project.source} | {project.language} | {project.date} | {project.views} views
             </p>
             <div className={styles.tagsBox}>
               {tags.map((item) => (
@@ -35,14 +43,11 @@ const Results = ({ filteredList, tags, search }) => {
               ))}
             </div>
             <br></br>
-            {/* temporary snippet */}
             <HighLighter
               text={project.content}
               highlight={search}
               highlightedItemClass='highlight'
             ></HighLighter>
-            {/* <img width='100%' src='coronavirus.png' /> */}
-            {/* <p> CODE SNIPPET HERE -- -- --</p> */}
           </div>
         );
       })}
