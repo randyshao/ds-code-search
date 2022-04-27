@@ -1,6 +1,7 @@
 import styles from '../styles/Home.module.css';
 import HighLighter from './highlighter';
 // import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
 
 const Results = ({ filteredList, tags, search }) => {
   return (
@@ -12,6 +13,8 @@ const Results = ({ filteredList, tags, search }) => {
             tags.push(item);
           });
         }
+        let content = project.content.replaceAll('\\n', '\n');
+        console.log(project);
         return (
           <div key={index} className={styles.result}>
             <p style={{ fontWeight: 'bold' }}>
@@ -35,14 +38,13 @@ const Results = ({ filteredList, tags, search }) => {
               ))}
             </div>
             <br></br>
-            {/* temporary snippet */}
-            <HighLighter
+            <ReactMarkdown>{content}</ReactMarkdown>
+
+            {/* <HighLighter
               text={project.content}
               highlight={search}
               highlightedItemClass='highlight'
-            ></HighLighter>
-            {/* <img width='100%' src='coronavirus.png' /> */}
-            {/* <p> CODE SNIPPET HERE -- -- --</p> */}
+            ></HighLighter> */}
           </div>
         );
       })}
