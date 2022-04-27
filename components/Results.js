@@ -21,6 +21,9 @@ const Results = ({ filteredList, tags, search }) => {
         else if (project.source == "Towards Data Science") {
           logo = <img width='20' src='tds.png' />;
         }
+        else if (project.source == "GitHub") {
+          logo = <img width='20' src='github.png' />;
+        }
         let content = project.content.replaceAll('\\n', '\n');
         console.log(project);
         return (
