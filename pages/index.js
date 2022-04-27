@@ -135,8 +135,9 @@ export default function Home() {
     if (isChecked) {
       newChecked.push(filter);
       setChecked(newChecked);
-      const results = filteredList.filter((project) =>
-        project.language.includes(filter)
+      const results = filteredList.filter(
+        (project) =>
+          project.language.includes(filter) + project.source.includes(filter)
       );
       setFilteredList(results);
     } else {

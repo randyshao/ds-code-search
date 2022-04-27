@@ -4,6 +4,7 @@ import { useState } from 'react';
 const Filters = ({ handleCheck }) => {
   // arrays for filters
   const languages = ['Python', 'R'];
+  const sources = ['Kaggle', 'GitHub', 'Towards Data Science'];
   const date = ['Over 1 year', 'Last year', 'Last week', 'Today'];
   const views = ['Under 100', '100 - 9999', 'More than 10,000'];
 
@@ -46,6 +47,21 @@ const Filters = ({ handleCheck }) => {
       </div>
     ));
 
+  const renderSourceFilters = () =>
+    sources.map((item, index) => (
+      <div key={index} style={{ fontSize: '0.83em' }}>
+        <input
+          value={item}
+          name={item}
+          type='checkbox'
+          onChange={(e) => handleCheck(e)}
+        />
+        <label className={isChecked(item)} htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    ));
+
   return (
     <div className={styles.filterBox}>
       <h3 style={{ color: 'black' }}>Filters</h3>
@@ -53,7 +69,11 @@ const Filters = ({ handleCheck }) => {
         {`Showing results for: ${checkedItems}`}
       </div>
       <div className='filters'>
-        <h5>Date:</h5>
+        <h5>Language:</h5>
+        {renderLanguageFilters()}
+        <h5>Source:</h5>
+        {renderSourceFilters()}
+        {/* <h5>Date:</h5>
         {date.map((item, index) => (
           <div key={index} style={{ fontSize: '0.83em' }}>
             <input
@@ -63,10 +83,9 @@ const Filters = ({ handleCheck }) => {
             />
             <span className={item}>{item}</span>
           </div>
-        ))}
-        <h5>Language:</h5>
-        {renderLanguageFilters()}
-        <h5>Number of Views:</h5>
+        ))} */}
+
+        {/* <h5>Number of Views:</h5>
         {views.map((item, index) => (
           <div key={index} style={{ fontSize: '0.83em' }}>
             <input
@@ -76,9 +95,8 @@ const Filters = ({ handleCheck }) => {
             />
             <span className={isChecked(item)}>{item}</span>
           </div>
-        ))}
+        ))} */}
         <br></br>
-        <button>Apply Filters</button>
       </div>
     </div>
   );
