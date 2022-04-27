@@ -1,5 +1,5 @@
 import styles from '../styles/Home.module.css';
-import HighLighter from './highlighter';
+import HighLighter from './Highlighter';
 // import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 
